@@ -34,6 +34,32 @@ soit m le mot actuel, a chaque mise a jour du user, on fait find_trie m (fonctio
 Frequence & Distance
 Plus on descend en profondeur plus la proba du mot baisse : loi exponentielle
 
+Sémantique : 
+Pour les mots generé a partir du program initial faire les embedding avec des clusters pour proposer des mots cohérents
+Exemple : Impression 100freq et Imprimer 2freq, dire impression est presque aussi probable que dire imprimer, donc faire des cluster sémantiques
+Soit m le mot actuel, proposer des mots du clusteur dont la dist de Levenshtein sur les |m| premieres lettres est proche
+
+
+Idée : Quand on tape un mot on augmente la freq pour tout le clusteur
+Faire les clusteurs dès le debut ?
+
+
+Idée : 
+Score = α × fréquence 
+          + β × recency 
+          + γ × distance
+frequence = nb_saisie/somme nb_saisie de tous ceux selectionnés
+distance = loi exponentielle en fonction du nbr de layers
+recency = last_used/nb_mot_saisie 
+
+
+
+PIL ?
+lexicale : ocaml
+syntaxique
+semantique : 
+- modele NLP entrainé sur des phrases, predit a partir de la phrase acc et le mot acc. Etsi entrainé par le user ?
+- modele qui fait le calcul du score et propose les mots, et qui met a jour les poids (adaptif) en fonction des choix du user
 
 Ocaml : 
 1 - Modele naif qui recupere les n mots les plus proches dans le graph
@@ -41,6 +67,9 @@ Ocaml :
 3 - Ajoute recency
 4 - Equilibrer distance
 5 - Auto-correction
-6 - Proximité sémantique : word embedding ?
+6 - Proximité sémantique 
 
+
+
+PFA, Algo, IAS, PIL
 
