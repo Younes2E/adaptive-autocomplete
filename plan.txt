@@ -1,0 +1,46 @@
+Localité spatiale et temporelle
+
+var globale nb_mot_saisie
+nœud terminal : nb_saisie, last_used
+si terminal est saisi : last_used := nb_mot_saisie; nb_saisie++;
+
+json avec les mots + attr
+au debut de l'exec init le trie avec le json
+
+a la fin du prog : save le trie acc dans le json
+
+start : version sans poids, seulement trouver les n terminaux les plus proches. BFS > DFS car on cherche en rayon et non suivant la structure du trie, DFS force un ordre alphabetique (à tester, exemple avec terminaux : aaaaaa aaaab aabaaa ab ac ad et etre sur le nœud a, dessiner le trie dans le readme)
+
+probleme --> equilibrer frequence et distance
+
+
+Initialisation :
+  Tous les mots du dictionnaire → freq = 0
+  Suggere les mots les plus proches
+  
+Au fil du temps : Le modèle apprend les préférences, Suggestions deviennent personnalisées
+
+Auto-corrections
+
+
+Invariant : nb_mot_saisie = Somme de tous les nb_saisie
+
+
+soit m le mot actuel, a chaque mise a jour du user, on fait find_trie m (fonction cours PFA) pour recup le trie actuel
+
+
+
+
+Frequence & Distance
+Plus on descend en profondeur plus la proba du mot baisse : loi exponentielle
+
+
+Ocaml : 
+1 - Modele naif qui recupere les n mots les plus proches dans le graph
+2 - Ajoute les frequence
+3 - Ajoute recency
+4 - Equilibrer distance
+5 - Auto-correction
+6 - Proximité sémantique : word embedding ?
+
+
