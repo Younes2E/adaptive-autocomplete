@@ -5,7 +5,7 @@ nœud terminal : nb_saisie, last_used
 si terminal est saisi : last_used := nb_mot_saisie; nb_saisie++;
 
 json avec les mots + attr
-au debut de l'exec init le trie avec le json
+au debut de l'exec init le trie avec le json : demander un nom de session, recuperer le json correspondant ou créer un nouveau.
 
 a la fin du prog : save le trie acc dans le json
 
@@ -31,6 +31,9 @@ soit m le mot actuel, a chaque mise a jour du user, on fait find_trie m (fonctio
 
 
 
+TAL : 
+Stop words
+
 Frequence & Distance
 Plus on descend en profondeur plus la proba du mot baisse : loi exponentielle
 
@@ -39,19 +42,25 @@ Pour les mots generé a partir du program initial faire les embedding avec des c
 Exemple : Impression 100freq et Imprimer 2freq, dire impression est presque aussi probable que dire imprimer, donc faire des cluster sémantiques
 Soit m le mot actuel, proposer des mots du clusteur dont la dist de Levenshtein sur les |m| premieres lettres est proche
 
+on propose des champs lexicaux desquels on parle beaucoup, plus on mentionne la nourriture, plus on a de chance de mentionner manger
+
+Pour eviter de donner que des mots avec le meme sens -> clustering et on propose qu'un mot  par cluster
+
 
 Idée : Quand on tape un mot on augmente la freq pour tout le clusteur
 Faire les clusteurs dès le debut ?
 
 
 Idée : 
-Score = α × fréquence 
-          + β × recency 
-          + γ × distance
+Score = a × fréquence + b × recency + c × distance
+a + b + c = 0 
+
 frequence = nb_saisie/somme nb_saisie de tous ceux selectionnés
 distance = loi exponentielle en fonction du nbr de layers
 recency = last_used/nb_mot_saisie 
 
+
+stocker sur chaque noeud, la somme de nb_used du sous arbre
 
 
 PIL ?
@@ -71,5 +80,5 @@ Ocaml :
 
 
 
-PFA, Algo, IAS, PIL
+PFA, OLA, IAS, PIL
 
