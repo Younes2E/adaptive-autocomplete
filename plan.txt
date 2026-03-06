@@ -44,7 +44,10 @@ Soit m le mot actuel, proposer des mots du clusteur dont la dist de Levenshtein 
 
 on propose des champs lexicaux desquels on parle beaucoup, plus on mentionne la nourriture, plus on a de chance de mentionner manger
 
-Pour eviter de donner que des mots avec le meme sens -> clustering et on propose qu'un mot  par cluster
+Pour eviter de donner que des mots avec le meme sens -> clustering et on propose qu'un mot par cluster
+puis a partir de la phrase actuelle, predire les clusteur les plus problable.
+
+Puis on selectionne les n premier cluster et recup le mot le plus probable par clusteur
 
 
 Idée : Quand on tape un mot on augmente la freq pour tout le clusteur
@@ -76,9 +79,8 @@ Ocaml :
 3 - Ajoute recency
 4 - Equilibrer distance
 5 - Auto-correction
-6 - Proximité sémantique 
+6 - Proximité sémantique
 
 
 
 PFA, OLA, IAS, PIL
-
