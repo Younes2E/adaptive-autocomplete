@@ -47,8 +47,11 @@ let rec size t =
 
 let trie_dict_fr () =
   let t = create_trie () in
-  List.iter (fun s -> add t s) (In_channel.input_lines (open_in "dict_fr.txt"));
+  let ic = open_in "dict_fr.txt" in 
+  List.iter (fun s -> add t s) (In_channel.input_lines ic);
+  close_in ic;
   t
+
 
 
 let dict = trie_dict_fr ()
