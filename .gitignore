@@ -32,5 +32,13 @@ setup.log
 # Dune generated files
 *.install
 
+.vscode/
+
+dune
+
+dune-project
+
+*.exe
+
 # Local OPAM switch
 _opam/
