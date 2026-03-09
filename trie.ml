@@ -45,6 +45,17 @@ let add t word =
 let rec size t = 
   List.fold_left (fun acc (_,t) -> acc + size t) (if t.terminal then 1 else 0) t.children
 
+
+let find_prefix t word = 
+  let n = String.length word in 
+  let rec aux i node = 
+    if i = n then Some node 
+    else 
+      match List.assoc_opt word.[i] node.children with
+      None -> None
+      | Some next_node -> aux (i+1) next_node
+  in aux 0 t
+
 let trie_dict_fr () =
   let t = create_trie () in
   let ic = open_in "dict_fr.txt" in 
@@ -57,7 +68,10 @@ let trie_dict_fr () =
 let dict = trie_dict_fr ()
 
 let () = 
-  Printf.printf "%d\n" (size dict)
+  Printf.printf "%d\n" (size dict);
+  match find_prefix dict "bon" with
+  | None -> Printf.printf "prefix not found\n"
+  | Some node -> Printf.printf "prefix 'bon' found, %d words\n" (size node)
 
 
 
