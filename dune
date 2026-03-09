@@ -1,0 +1,3 @@
+(executable
+  (name trie)
+ (promote (until-clean)))
