@@ -5,8 +5,8 @@ type trie = {
   mutable terminal: bool;
 }
 
-let nb_mot_saisie = ref 0
-
+(*let nb_mot_saisie = ref 0
+*)
 let create_trie () = 
   { last_used = 0;
     freq = 0;
@@ -40,3 +40,22 @@ let add t word =
         add_node (i+1) tk;
         (ck,tk)::ll)
    in add_node 0 t
+
+
+let rec size t = 
+  List.fold_left (fun acc (_,t) -> acc + size t) (if t.terminal then 1 else 0) t.children
+
+let trie_dict_fr () =
+  let t = create_trie () in
+  List.iter (fun s -> add t s) (In_channel.input_lines (open_in "dict_fr.txt"));
+  t
+
+
+let dict = trie_dict_fr ()
+
+let () = 
+  Printf.printf "%d\n" (size dict)
+
+
+
+  

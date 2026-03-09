@@ -34,9 +34,7 @@ setup.log
 
 .vscode/
 
-dune
 
-dune-project
 
 *.exe
 
