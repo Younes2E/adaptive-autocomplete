@@ -1,15 +1,22 @@
 Information Retrieval : 
 Trie
-Edit distance algo
+noisy channel - Damerau-Levenshtein avec score
+exemple : pour "acress" : tester [a-z]acress, [a-z]cress, a[a-z]ress, ac[a-z]ess, acr[a-z]ss, acre[a-z]s, acres[a-z], acress[a-z] -> insertion, substitution ...
+
+fonctionnalité : add to dictionnary -> scan le text entier et add le nbr d'occ : garder dans le cache les candidat pour ne pas recalculer les candidats à chaque fois ?
 
 
 
+confusion matrix -> 26*26 (plus avec accents etc), nb of times a letter was substituted for another
 
 
-Bayesian + Noisy Channel
+proposer les mots qui vont dans le contexte de la phrase
+partir de tous les candidats,
+modele pré entrainé avec des textes (flandes gitlab // wikipedia hugging face)
+qui s'adapte -> continual learning
 
-Language Model semantic
 
+(BERTScore)
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
