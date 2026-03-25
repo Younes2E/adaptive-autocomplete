@@ -16,6 +16,8 @@ modele pré entrainé avec des textes (flandes gitlab // wikipedia hugging face)
 qui s'adapte -> continual learning
 
 
+save dans un json l'état du trie pour la prochaine session
+
 (BERTScore)
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
