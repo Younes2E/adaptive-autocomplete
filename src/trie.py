@@ -5,38 +5,57 @@ class TrieNode:
         self.children = {}
         self.is_word = False
         self.freq = 0
-        self.nb_used = 0
+        self.last_used = 0
+
+    def is_empty(self):
+        return not self.is_word and len(self.children) == 0
+    
 
 class Trie:
     def __init__(self):
         self.root = TrieNode()
+        self.nb_typed = 0
 
-    def add(self, word: str, freq: int = 0):
+    def add(self, word: str):
         node = self.root
         for char in word:
             if char not in node.children:
                 node.children[char] = TrieNode()
             node = node.children[char]
         node.is_word = True
-        node.freq = freq
+        node.freq = 0
 
     def remove(self, word: str):
-        node = self.root
-        for char in word :  
-            if char not in node.children : 
-                print('unable to remove word, not in trie')
-                return 
-            node = node.children[char]
-        node.is_word = False
+        def loop(node, depth):
+            if depth == len(word):
+                if not node.is_word :
+                    print('unable to remove word, not in trie') ## --> Raise exception
+                else :
+                    node.is_word = False
+                    self.nb_typed -= node.freq
+                    node.freq = 0
+            elif word[depth] not in node.children : 
+                print('unable to remove word, not in trie') ## --> Raise exception
+            else :
+                char = word[depth]
+                child = node.children[char]
+                loop(child, depth+1)
+                if child.is_empty() :
+                    del node.children[char]
+        loop(self.root, 0)
 
-    def use(self, word: str):
-        if self.search(word) : 
-            node = self.root
-            for char in word : 
-                node = node.children[char]
-            node.nb_used += 1
-        else : 
-            print('unable to use word, not in trie')
+    def type(self, word: str):
+        def loop(node, depth):
+            if depth == len(word):
+                node.freq += 1
+                self.nb_typed += 1
+                node.last_used = self.nb_typed
+            elif word[depth] not in node.children : 
+                print('unable to type word, not in trie') ## --> Raise exception
+            else:
+                char = word[depth]
+                loop(node.children[char], depth+1)   
+        loop(self.root, 0)
 
     def search(self, word: str) -> bool:
         node = self.root
@@ -56,7 +75,7 @@ class Trie:
         
         def dfs(current_node, current_word, current_depth):
             if current_node.is_word:
-                res.append((current_word, current_node.freq + current_node.nb_used))
+                res.append((current_word, current_node.freq + current_node.last_used))
             
             if current_depth == max_depth:
                 return 
@@ -69,10 +88,6 @@ class Trie:
         res.sort(key=lambda x: x[1], reverse=True)
         return [word for word, score in res[:n]]
 
-        
-        
-
-
     def save(self, path: str):
         # TODO: Save trie to a JSON file
         pass
@@ -80,3 +95,11 @@ class Trie:
     def load(self, path: str):
         # TODO: Load trie from a JSON file
         pass
+
+
+def main():
+    trie = Trie()
+
+
+if __name__ == "__main__":
+    main()

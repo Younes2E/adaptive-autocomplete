@@ -20,6 +20,8 @@ save dans un json l'état du trie pour la prochaine session
 
 (BERTScore)
 
+modeliser faute accents (é, à, è) avec la matrice de confusion
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -27,6 +29,10 @@ trie.py
 Class Trie :
 	attr : freq, nb_used, nb_used_trie (pour compute nb_used / nb_used_trie -- additionner en depilant la pile d'appel)
 	fonctions : add, remove, use(quand l'utilisateur entre un mot), get (renvoie n mots du sous arbre de profondeur <= p), get_noise (renvoie n mots du sous arbre dont la edit distance <= d)
+
+
+Trie.use(w)
+si w est dans les mots proposé on fait trie.use(w), sinon on attend que le user fasse 'add w to dicionnary' pour use, qui va ajouter le mot dans le trie puis le use
 
 
 
