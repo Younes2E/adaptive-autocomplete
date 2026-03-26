@@ -34,6 +34,7 @@ class Trie:
                     node.is_word = False
                     self.nb_typed -= node.freq
                     node.freq = 0
+                    node.last_used = 0
             elif word[depth] not in node.children : 
                 print('unable to remove word, not in trie') ## --> Raise exception
             else :
@@ -89,12 +90,37 @@ class Trie:
         return [word for word, score in res[:n]]
 
     def save(self, path: str):
-        # TODO: Save trie to a JSON file
-        pass
+        def serialize(node):
+            return {
+                "is_word": node.is_word,
+                "freq": node.freq,
+                "last_used": node.last_used,
+                "children": {
+                    char: serialize(child)
+                    for char, child in node.children.items()
+                },
+            }
+        data = {
+            "nb_typed": self.nb_typed,
+            "root": serialize(self.root),
+        }
+        with open(path, "w") as f:
+            json.dump(data, f, indent=2)
+
 
     def load(self, path: str):
-        # TODO: Load trie from a JSON file
-        pass
+        def deserialize(data):
+            node = TrieNode()
+            node.is_word = data["is_word"]
+            node.freq = data["freq"]
+            node.last_used = data["last_used"]
+            node.children = {char: deserialize(child) for char, child in data["children"].items()}
+            return node
+        with open(path, "r") as f:
+            data = json.load(f)
+            self.nb_typed = data["nb_typed"]
+            self.root = deserialize(data["root"]) 
+        return self
 
 
 def main():
