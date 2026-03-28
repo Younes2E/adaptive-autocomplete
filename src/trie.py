@@ -29,14 +29,14 @@ class Trie:
         def loop(node, depth):
             if depth == len(word):
                 if not node.is_word :
-                    print('unable to remove word, not in trie') ## --> Raise exception
+                    raise KeyError(f'{word} not found')
                 else :
                     node.is_word = False
                     self.nb_typed -= node.freq
                     node.freq = 0
                     node.last_used = 0
             elif word[depth] not in node.children : 
-                print('unable to remove word, not in trie') ## --> Raise exception
+                raise KeyError(f'{word} not found') 
             else :
                 char = word[depth]
                 child = node.children[char]
@@ -52,7 +52,7 @@ class Trie:
                 self.nb_typed += 1
                 node.last_used = self.nb_typed
             elif word[depth] not in node.children : 
-                print('unable to type word, not in trie') ## --> Raise exception
+                raise KeyError(f'{word} not found')
             else:
                 char = word[depth]
                 loop(node.children[char], depth+1)   
@@ -65,6 +65,14 @@ class Trie:
                 return False 
             node = node.children[char]
         return node.is_word 
+
+
+    def get_noise(self, word, distance = 1):
+        """
+        Damerau-Levanshtein Distance
+        return (word, distance, freq, last_used)list
+        """
+
 
     def get(self, prefix: str, n: int = 5, max_depth: int = 5):
         res = []

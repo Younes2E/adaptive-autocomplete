@@ -34,6 +34,8 @@ Class Trie :
 Trie.use(w)
 si w est dans les mots proposé on fait trie.use(w), sinon on attend que le user fasse 'add w to dicionnary' pour use, qui va ajouter le mot dans le trie puis le use
 
+Trie.get_noise(word)
+recupere les mots a une edit distance de 2, puis recupere leurs completions possibles (avec score) 
 
 
 
