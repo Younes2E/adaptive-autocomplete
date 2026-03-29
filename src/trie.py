@@ -86,11 +86,6 @@ class Trie:
                     loop(node.children[char], i, distance-1, buffer+char, max_depth, f"insert({char} @ indice :{i})")
             if i < n and distance > 0 :
                 loop(node, i+1, distance-1, buffer, max_depth, f"delete({word[i]} @ indice :{i})")
-
-
-
-                
-
         loop(self.root, 0, distance, "")
         return np.array(result)[:canditate]
 
@@ -167,11 +162,15 @@ def main():
     trie.add("erreur")
     trie.add("échanger")
     trie.add("echange")
+    trie.add("temps")
+    trie.add("température")
 
 
     print("Autocomplete de \"arr\"\n",trie.get_noise("arr"),"\n")
 
     print("Autocomplete de \"echang\"\n",trie.get_noise("echang"),"\n")
+    print("Autocomplete de \"temps\"\n",trie.get_noise("temps"),"\n")
+
 
 
 

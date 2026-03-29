@@ -1,7 +1,6 @@
 Information Retrieval : 
 Trie
 noisy channel - Damerau-Levenshtein avec score
-exemple : pour "acress" : tester [a-z]acress, [a-z]cress, a[a-z]ress, ac[a-z]ess, acr[a-z]ss, acre[a-z]s, acres[a-z], acress[a-z] -> insertion, substitution ...
 
 fonctionnalité : add to dictionnary -> scan le text entier et add le nbr d'occ : garder dans le cache les candidat pour ne pas recalculer les candidats à chaque fois ?
 
@@ -48,8 +47,15 @@ constructeur importe les 4 csv et les met dans 4 dataframe
 
 MRR (Mean Reciprocal Rank)
 
+JSON :
+Enregistrer les mots plutot que les nodes, car nb_node = nb_prefixes de chaque mot et il existe plus de prefixe que de mots au pire cas
 
 
+amelioration possibles : 
+matrice confusion modelisent l'erreur au clavier, il faudrait ajouter une dimension phonetique aussi -> les erreurs ne sont plus indé -> autre que Naive Bayes
+
+rapport : 
+montrer la distribution gaussienne sur le clavier, chaque touche a une gaussienne centrée en sa position
 
 
 
