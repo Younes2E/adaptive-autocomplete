@@ -38,6 +38,17 @@ Trie.get_noise(word)
 recupere les mots a une edit distance de 2, puis recupere leurs completions possibles (avec score) 
 
 
+confusion.py
+Class Confusion:
+4 tables
+constructeur importe les 4 csv et les met dans 4 dataframe
+(4 csv crées préalablement)
+4 fonctions : del, rev, add, subst
+
+
+MRR (Mean Reciprocal Rank)
+
+
 
 
 

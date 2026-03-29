@@ -1,4 +1,5 @@
 import json
+import numpy as np
 
 class TrieNode:
     def __init__(self):
@@ -67,12 +68,31 @@ class Trie:
         return node.is_word 
 
 
-    def get_noise(self, word, distance = 1):
+    def get_noise(self, word, distance = 1, canditate = 20):
         """
         Damerau-Levanshtein Distance
         return (word, distance, freq, last_used)list
         """
+        result = []
+        n = len(word)
+        def loop(node, i, distance, buffer, max_depth = 5, operation = None):
+            if node.is_word : 
+                result.append((buffer, operation))
+            for char in node.children :
+                if i <= n + max_depth and (i >= n or char == word[i])  :
+                    loop(node.children[char], i+1, distance, buffer+char, max_depth,operation)
+                elif distance > 0 :
+                    loop(node.children[char], i+1, distance-1, buffer+char, max_depth, f"substitution({char} @ indice :{i})")
+                    loop(node.children[char], i, distance-1, buffer+char, max_depth, f"insert({char} @ indice :{i})")
+            if i < n and distance > 0 :
+                loop(node, i+1, distance-1, buffer, max_depth, f"delete({word[i]} @ indice :{i})")
 
+
+
+                
+
+        loop(self.root, 0, distance, "")
+        return np.array(result)[:canditate]
 
     def get(self, prefix: str, n: int = 5, max_depth: int = 5):
         res = []
@@ -133,6 +153,31 @@ class Trie:
 
 def main():
     trie = Trie()
+    trie.add("arbre")
+    trie.add("arm")
+    trie.add("arret")
+    trie.add("barre")
+    trie.add("air")
+    trie.add("arrets")
+    trie.add("apres")
+    trie.add("app")
+    trie.add("irrespect")
+    trie.add("image")
+    trie.add("imager")
+    trie.add("erreur")
+    trie.add("échanger")
+    trie.add("echange")
+
+
+    print("Autocomplete de \"arr\"\n",trie.get_noise("arr"),"\n")
+
+    print("Autocomplete de \"echang\"\n",trie.get_noise("echang"),"\n")
+
+
+
+
+
+
 
 
 if __name__ == "__main__":
