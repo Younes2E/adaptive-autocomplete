@@ -5,28 +5,33 @@ class Confusion:
     def __init__(self, data_dir="data"):
         self.tables = {}
         
-        for name in ["del", "rev", "add", "subst"]:
+        for name in ["del", "rev", "insert", "sub", "unigram", "bigram"]:
             path = os.path.join(data_dir, f"{name}.csv")
             if os.path.exists(path):
                 self.tables[name] = pd.read_csv(path, index_col=0)
             else:
-                self.tables[name] = None
-                print(f"Warning: {name}.csv not found")
+                raise ImportError(f"Erreur confusion : {name}")
 
-    def _get_val(self, table_name, x, y):
-        df = self.tables.get(table_name)
-        if df is not None and x in df.index and y in df.columns:
-            return df.loc[x, y]
-        return 0.0
+    def delete(self, x, y):
+        df = self.tables["del"]
+        return df.at[x,y]
 
-    def get_del(self, x, y):
-        return self._get_val("del", x, y)
+    def reverse(self, x, y):
+        df = self.tables["rev"]
+        return df.at[x,y]
 
-    def get_rev(self, x, y):
-        return self._get_val("rev", x, y)
+    def insert(self, x, y):
+        df = self.tables["insert"]
+        return df.at[x,y]
 
-    def get_add(self, x, y):
-        return self._get_val("add", x, y)
-
-    def get_subst(self, x, y):
-        return self._get_val("subst", x, y)
+    def substitute(self, x, y):
+        df = self.tables["sub"]
+        return df.at[x,y]
+    
+    def count_unigram(self, x):
+        df = self.table["unigram"]
+        return df.at[x]
+    
+    def count_bigram(self, x, y):
+        df = self.table["bigram"]
+        return df.at[x,y]

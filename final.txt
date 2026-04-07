@@ -43,7 +43,7 @@ Class Confusion:
 constructeur importe les 4 csv et les met dans 4 dataframe
 (4 csv crées préalablement)
 4 fonctions : del, rev, add, subst
-
+unigram et bigram count
 
 MRR (Mean Reciprocal Rank)
 
@@ -57,9 +57,12 @@ matrice confusion modelisent l'erreur au clavier, il faudrait ajouter une dimens
 rapport : 
 montrer la distribution gaussienne sur le clavier, chaque touche a une gaussienne centrée en sa position
 
-
-
-
+get_noise("tra")
+tr|a -> subst = del, ça fait la meme chose donc on ne peut pas delete quand on est sur la derniere lettre
+sur les |distance| dernieres lettre de w, delete est inutile
+references : correction de pov de correction // nous : pov typo (word est consideré comme la typo)
+Dans le modèle Noisy Channel, on considère que le canal a "appliqué" une transformation sur le mot correct word pour produire l'erreur x,
+On fait le contraire, on part de la typo pour trouver les mots valides qui aurait pu etre deformés -> Plus rapide
 
 
 
