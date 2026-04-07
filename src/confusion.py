@@ -2,15 +2,11 @@ import os
 import pandas as pd
 
 class Confusion:
-    def __init__(self, data_dir="data"):
+    def __init__(self):
         self.tables = {}
         
-        for name in ["del", "rev", "insert", "sub", "unigram", "bigram"]:
-            path = os.path.join(data_dir, f"{name}.csv")
-            if os.path.exists(path):
-                self.tables[name] = pd.read_csv(path, index_col=0)
-            else:
-                raise ImportError(f"Erreur confusion : {name}")
+        for name in ["del", "rev", "insert", "sub", "count_unigram", "count_bigram"]:
+            self.tables[name] = pd.read_csv(f"data/matrices/{name}.csv", index_col=0)
 
     def delete(self, x, y):
         df = self.tables["del"]
@@ -29,9 +25,10 @@ class Confusion:
         return df.at[x,y]
     
     def count_unigram(self, x):
-        df = self.table["unigram"]
-        return df.at[x]
+        df = self.tables["count_unigram"]
+        return df.at[x, "count"]
     
     def count_bigram(self, x, y):
-        df = self.table["bigram"]
+        df = self.tables["count_bigram"]
         return df.at[x,y]
+

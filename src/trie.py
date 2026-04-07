@@ -1,5 +1,4 @@
 import json
-import numpy as np
 
 class TrieNode:
     def __init__(self):
@@ -69,29 +68,26 @@ class Trie:
         return node.is_word 
 
 
-    def get_noise(self, word, distance = 1, max_depth=5, canditates = 20):
-        """
-        Damerau-Levanshtein Distance
-        return (word, distance, freq, last_used)list
-        """
+    def get_noise(self, word, distance = 1, max_depth=5, canditates = 50):
         result = []
         n = len(word)
 
         def loop(node, i, distance, buffer, operation = None, x=None, w=None):
             if node.is_word and i >= n - distance: 
                 result.append([buffer, operation, x, w, node.freq, node.last_used])
-            for char in node.children :
-                if i <= n + max_depth and (i >= n or char == word[i])  :
-                    loop(node.children[char], i+1, distance, buffer+char,operation, x, w)
-                elif distance > 0 :
-                    loop(node.children[char], i+1, distance-1, buffer+char, "sub", word[i], char)
-                    loop(node.children[char], i, distance-1, buffer+char,  "ins", buffer[-1] if i > 0 else '', char) 
-                    if i < n - distance and char == word[i+1]:
-                        loop(node.children[char], i+2, distance -1, buffer+char, "del",word[i-1] if i > 0 else '', word[i])
-                        if word[i] in node.children[char].children:
-                            loop(node.children[char].children[word[i]], i+2, distance -1, buffer+char+word[i], "rev",word[i], word[i+1])
+            if i <= n + max_depth :
+                for char in node.children :
+                    if i >= n or char == word[i]  :
+                        loop(node.children[char], i+1, distance, buffer+char,operation, x, w)
+                    elif distance > 0 :
+                        loop(node.children[char], i+1, distance-1, buffer+char, "sub", word[i], char)
+                        loop(node.children[char], i, distance-1, buffer+char,  "ins", buffer[-1] if i > 0 else '@', char) 
+                        if i < n - distance and char == word[i+1]:
+                            loop(node.children[char], i+2, distance -1, buffer+char, "del",word[i-1] if i > 0 else '@', word[i])
+                            if word[i] in node.children[char].children:
+                                loop(node.children[char].children[word[i]], i+2, distance -1, buffer+char+word[i], "rev",word[i], word[i+1])
         loop(self.root, 0, distance, "")
-        return np.array(result[:canditates])
+        return result
 
     def get(self, prefix: str, n: int = 5, max_depth: int = 5):
         res = []
@@ -159,30 +155,11 @@ def main():
     trie.add("air")
     trie.add("arrets")
     trie.add("apres")
-    trie.add("irrespect")
-    trie.add("image")
-    trie.add("imager")
-    trie.add("erreur")
-    trie.add("échanger")
-    trie.add("aérer")
-    trie.add("echange")
-    trie.add("temps")
-    trie.add("température")
-    trie.add("actress")
-    trie.add("cress")
-    trie.add("caress")
-    trie.add("access")
-    trie.add("across")
-    trie.add("acres")
+    trie.add("arrivererasqhsdsjsd")
+  
+
     print("Autocomplete de \"arr\"\n",trie.get_noise("arr"),"\n")
-    print("Autocomplete de \"air\"\n",trie.get_noise("air"),"\n")
-    print("Autocomplete de \"acress\"\n",trie.get_noise("acress"),"\n")
-    print("Autocomplete de \"echang\"\n",trie.get_noise("echang"),"\n")
-    print("Autocomplete de \"temps\"\n",trie.get_noise("temps"),"\n")
-    print("Correction de \"irr.spect\"\n",trie.get_noise("irr.spect"),"\n")
-    print("Correction de \"irre.spect\"\n",trie.get_noise("irre.spect"),"\n")
-    print("Correction de \"irrspect\"\n",trie.get_noise("irrspect"),"\n")
-    print("Correction de \"uirrespect\"\n",trie.get_noise("uirrespect"),"\n")
+
 
 if __name__ == "__main__":
     main()

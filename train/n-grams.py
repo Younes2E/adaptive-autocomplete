@@ -1,17 +1,36 @@
 import pandas as pd
-import nltk
-nltk.download('brown') 
 from nltk.corpus import brown
 
-alphabet = [chr(97+i) for i in range(26)]
+def create_counts():
+    alphabet = [chr(97+i) for i in range(26)]
 
-df_bigram = pd.DataFrame(0, index=alphabet, columns=alphabet)
-df_unigram = pd.Series(0, index = alphabet)
+    alpha_ext = alphabet + ['@']
+    df_bigram = pd.DataFrame(0, index=alpha_ext, columns=alphabet)
 
-words = brown.words()
+    df_unigram = pd.Series(0, index=alphabet)
+
+    
+    for word in brown.words():
+        if word and all(c in alphabet for c in word):
+            # Unigram
+            for char in word:
+                df_unigram[char] += 1
+                
+            # Premier char d'un mot
+            df_bigram.at['@', word[0]] += 1
+            
+            # Bigram
+            for i in range(len(word) - 1):
+                w_prev = word[i]
+                w_curr = word[i+1]
+                df_bigram.at[w_prev, w_curr] += 1
+
+    return df_unigram, df_bigram
 
 def main():
-    print(type(words))
+    df_unigram, df_bigram = create_counts()
+    df_unigram.to_csv("data/matrices/count_unigram.csv", index_label="char", header=["count"])
+    df_bigram.to_csv("data/matrices/count_bigram.csv")
 
 if __name__ == "__main__":
     main()

@@ -1,36 +1,27 @@
-import json
-import os
 from trie import Trie
 from confusion import Confusion
 from noisy_channel import *
 
-
-
-
-import csv
-
-def load_unigrams(trie, file_path):
-    """
-    Lit le fichier CSV et ajoute chaque mot avec sa fréquence dans le Trie.
-    """
-    print(f"Chargement des données depuis {file_path}...")
-    
-    with open(file_path, mode='r', encoding='utf-8') as f:
-        reader = csv.DictReader(f)
-        for row in reader:
-            word = str(row['word'])
-            try:
-                freq = int(row['count'])
-                if word:
-                    trie.add(word, freq)
-            except (ValueError, TypeError):
-                continue
-    print(f"Chargement terminé. Total typed : {trie.nb_typed}")
-
+def load_dictionary_to_trie(trie, file_path):
+    with open(file_path, 'r', encoding='utf-8') as f:
+        for line in f:
+            parts = line.strip().split()
+            if len(parts) == 2:
+                word = parts[0].lower()
+                try:
+                    frequency = int(parts[1])
+                    trie.add(word, freq = frequency)
+                except Exception:
+                    continue
+                    
 
 def main():
     trie = Trie()
-    load_unigrams(trie, "data/en_freq.txt")
+    confusion = Confusion()
+    load_dictionary_to_trie(trie, "data/dict/en_freq.txt")
+    print(noisy_channel("acress", trie, confusion))
+
+
     
 
 if __name__ == "__main__":
