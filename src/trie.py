@@ -71,12 +71,12 @@ class Trie:
     def get_noise(self, word, distance = 1, max_depth=3):
         result = []
         n = len(word)
-
         def loop(node, i, distance, buffer, operation = None, x=None, w=None):
             if node.is_word and i >= n - distance: 
+                op, curr_x, curr_w = operation, x, w
                 if i < n :
-                    operation, x, w = "ins", buffer[-1] if i > 0 else '@', word[i]
-                result.append([buffer, operation, x, w, node.freq, node.last_used])
+                    op, curr_x, curr_w = "ins", buffer[-1] if i > 0 else '@', word[i]
+                result.append([buffer, op, curr_x, curr_w, node.freq, node.last_used])
             if i <= n + max_depth :
                 for char in node.children :
                     if i >= n or char == word[i]  :
@@ -146,7 +146,18 @@ class Trie:
             self.nb_typed = data["nb_typed"]
             self.root = deserialize(data["root"]) 
         return self
-
+    
+    def load_dict(self, file_path):
+        with open(file_path, 'r', encoding='utf-8') as f:
+            for line in f:
+                parts = line.strip().split()
+                if len(parts) == 2:
+                    word = parts[0].lower()
+                    try:
+                        frequency = int(parts[1])
+                        self.add(word, freq = frequency)
+                    except Exception:
+                        continue
 
 def main():
     trie = Trie()
@@ -167,8 +178,14 @@ def main():
     trie.add("acres")
     trie.add("acre")
 
+    trie.add("then")
+    trie.add("than")
+    trie.add("them")
+    trie.add("the")
 
-    print("Autocomplete de \"acress\"\n",trie.get_noise("acress"),"\n")
+
+
+    print("Autocomplete de \"then\"\n",trie.get_noise("then"),"\n")
 
 
 if __name__ == "__main__":
