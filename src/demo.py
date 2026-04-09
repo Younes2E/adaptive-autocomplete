@@ -2,7 +2,7 @@ from trie import Trie
 from confusion import Confusion
 from noisy_channel import *
 
-def load_dictionary_to_trie(trie, file_path):
+def load_dict(trie, file_path):
     with open(file_path, 'r', encoding='utf-8') as f:
         for line in f:
             parts = line.strip().split()
@@ -18,11 +18,10 @@ def load_dictionary_to_trie(trie, file_path):
 def main():
     trie = Trie()
     confusion = Confusion()
-    load_dictionary_to_trie(trie, "data/dict/en_freq.txt")
-    print(noisy_channel("acress", trie, confusion))
-
-
-    
+    load_dict(trie, "data/dict/en_freq.txt")
+    word = str(input("Enter a word : "))
+    print(f"Autocomplete : {word}")
+    print(noisy_channel(word, trie, confusion))
 
 if __name__ == "__main__":
     main()

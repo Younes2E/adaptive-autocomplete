@@ -68,12 +68,14 @@ class Trie:
         return node.is_word 
 
 
-    def get_noise(self, word, distance = 1, max_depth=5, canditates = 50):
+    def get_noise(self, word, distance = 1, max_depth=3):
         result = []
         n = len(word)
 
         def loop(node, i, distance, buffer, operation = None, x=None, w=None):
             if node.is_word and i >= n - distance: 
+                if i < n :
+                    operation, x, w = "ins", buffer[-1] if i > 0 else '@', word[i]
                 result.append([buffer, operation, x, w, node.freq, node.last_used])
             if i <= n + max_depth :
                 for char in node.children :
@@ -81,9 +83,9 @@ class Trie:
                         loop(node.children[char], i+1, distance, buffer+char,operation, x, w)
                     elif distance > 0 :
                         loop(node.children[char], i+1, distance-1, buffer+char, "sub", word[i], char)
-                        loop(node.children[char], i, distance-1, buffer+char,  "ins", buffer[-1] if i > 0 else '@', char) 
+                        loop(node.children[char], i, distance-1, buffer+char,  "del", buffer[-1] if i > 0 else '@', char) 
                         if i < n - distance and char == word[i+1]:
-                            loop(node.children[char], i+2, distance -1, buffer+char, "del",word[i-1] if i > 0 else '@', word[i])
+                            loop(node.children[char], i+2, distance -1, buffer+char, "ins",buffer[-1] if i > 0 else '@', word[i])
                             if word[i] in node.children[char].children:
                                 loop(node.children[char].children[word[i]], i+2, distance -1, buffer+char+word[i], "rev",word[i], word[i+1])
         loop(self.root, 0, distance, "")
@@ -156,9 +158,17 @@ def main():
     trie.add("arrets")
     trie.add("apres")
     trie.add("arrivererasqhsdsjsd")
-  
+    
+    trie.add("actress")
+    trie.add("cress")
+    trie.add("caress")
+    trie.add("access")
+    trie.add("across")
+    trie.add("acres")
+    trie.add("acre")
 
-    print("Autocomplete de \"arr\"\n",trie.get_noise("arr"),"\n")
+
+    print("Autocomplete de \"acress\"\n",trie.get_noise("acress"),"\n")
 
 
 if __name__ == "__main__":

@@ -7,21 +7,24 @@ def prior(trie, candidate):
 
 def editprob(candidate, confusion):
     delta = 0.5
-    match candidate[1]:
+    op = candidate[1] 
+    x = candidate[2]
+    w = candidate[3]
+    match op:
         case "sub" :
-            return (confusion.substitute(candidate[2],candidate[3])+delta)/(confusion.count_unigram(candidate[3])+ delta * 26)
+            return (confusion.substitute(w, x) + delta)/(confusion.count_unigram(x)+delta*26)
         case "ins" :
-            return (confusion.insert(candidate[2],candidate[3])+delta)/(confusion.count_unigram(candidate[3])+ delta * 26)
+            return (confusion.insert(x, w) + delta)/(confusion.count_unigram(x)+delta*26)
         case "del" :
-            return (confusion.delete(candidate[2],candidate[3])+delta)/(confusion.count_bigram(candidate[2],candidate[3])+ delta * 26)
+            return (confusion.delete(x, w) + delta)/(confusion.count_bigram(x, w)+delta *26)        
         case "rev" :
-            return (confusion.reverse(candidate[2],candidate[3])+delta)/(confusion.count_bigram(candidate[2],candidate[3])+ delta * 26)
+            return (confusion.reverse(x, w) + delta)/(confusion.count_bigram(x, w)+delta*26)        
         case None :
             return 0.9
         case _:
             raise KeyError('Error editprob') 
 
-def noisy_channel(word, trie, confusion, n = 10):
+def noisy_channel(word, trie, confusion, n = 20):
     candidates = trie.get_noise(word)
     score = np.zeros(len(candidates))
     for idx, c in enumerate(candidates):
