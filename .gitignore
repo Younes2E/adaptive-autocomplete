@@ -2,6 +2,8 @@
 env
 __pycache__
 
+final.txt
+
 *.annot
 *.cmo
 *.cma

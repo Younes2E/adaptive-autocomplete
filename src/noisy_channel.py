@@ -1,4 +1,5 @@
 from trie import Trie
+from utils import softmax
 import numpy as np
 
 def prior(trie, candidate):
@@ -29,10 +30,10 @@ def noisy_channel(word, trie, confusion, n = 20):
     score = np.zeros(len(candidates))
     for idx, c in enumerate(candidates):
         score[idx] = np.log(prior(trie, c)) + np.log(editprob(c, confusion))
-
-    score_sorted = np.argsort(score)[::-1]
+    score_softmax = softmax(score)
+    score_sorted = np.argsort(score_softmax)[::-1]
     
-    return np.array([(candidates[i][0], score[i]) for i in score_sorted[:n]])
+    return [(candidates[i][0], score_softmax[i]) for i in score_sorted[:n]]
 
 
 
