@@ -1,0 +1,60 @@
+
+=== dictionary 10000 ===
+  prefix index: 0.3s, peak 5 MB
+  |q|=2 k=1  search_dp=4.56ms  baseline=1.50ms  get_noise=1.60ms
+  |q|=3 k=1  search_dp=2.20ms  baseline=1.84ms  get_noise=0.44ms
+  |q|=3 k=2  search_dp=12.22ms  baseline=194.11ms  get_noise=5.94ms
+  |q|=4 k=1  search_dp=3.31ms  baseline=3.72ms  get_noise=0.37ms
+  |q|=4 k=2  search_dp=16.48ms  baseline=475.89ms  get_noise=4.43ms
+  |q|=5 k=1  search_dp=3.39ms  baseline=5.91ms  get_noise=0.32ms
+  |q|=5 k=2  search_dp=14.55ms  baseline=893.34ms  get_noise=3.82ms
+  |q|=6 k=1  search_dp=3.93ms  baseline=10.12ms  get_noise=0.31ms
+  |q|=6 k=2  search_dp=16.39ms  baseline=1732.77ms  get_noise=3.58ms
+  |q|=7 k=1  search_dp=3.94ms  baseline=14.67ms  get_noise=0.32ms
+  |q|=7 k=2  search_dp=18.51ms  baseline=3042.33ms  get_noise=3.92ms
+
+=== dictionary 50000 ===
+  prefix index: 1.1s, peak 25 MB
+  |q|=2 k=1  search_dp=18.61ms  baseline=2.77ms  get_noise=6.07ms
+  |q|=3 k=1  search_dp=7.05ms  baseline=2.21ms  get_noise=1.70ms
+  |q|=3 k=2  search_dp=47.78ms  baseline=183.11ms  get_noise=28.21ms
+  |q|=4 k=1  search_dp=5.86ms  baseline=3.47ms  get_noise=0.62ms
+  |q|=4 k=2  search_dp=41.26ms  baseline=434.86ms  get_noise=11.37ms
+  |q|=5 k=1  search_dp=7.45ms  baseline=5.94ms  get_noise=0.62ms
+  |q|=5 k=2  search_dp=49.16ms  baseline=924.61ms  get_noise=10.11ms
+  |q|=6 k=1  search_dp=8.85ms  baseline=10.58ms  get_noise=0.64ms
+  |q|=6 k=2  search_dp=53.74ms  baseline=1779.38ms  get_noise=9.61ms
+  |q|=7 k=1  search_dp=9.21ms  baseline=15.06ms  get_noise=0.57ms
+  |q|=7 k=2  search_dp=54.09ms  baseline=2940.68ms  get_noise=9.83ms
+
+=== dictionary 100000 ===
+  prefix index: 2.9s, peak 51 MB
+  |q|=2 k=1  search_dp=38.58ms  baseline=6.65ms  get_noise=9.67ms
+  |q|=3 k=1  search_dp=13.49ms  baseline=2.61ms  get_noise=2.23ms
+  |q|=3 k=2  search_dp=97.00ms  baseline=192.83ms  get_noise=44.36ms
+  |q|=4 k=1  search_dp=7.59ms  baseline=3.63ms  get_noise=1.06ms
+  |q|=4 k=2  search_dp=67.94ms  baseline=503.40ms  get_noise=22.12ms
+  |q|=5 k=1  search_dp=10.16ms  baseline=7.16ms  get_noise=0.72ms
+  |q|=5 k=2  search_dp=78.94ms  baseline=1037.92ms  get_noise=18.85ms
+  |q|=6 k=1  search_dp=12.82ms  baseline=12.17ms  get_noise=0.79ms
+  |q|=6 k=2  search_dp=91.11ms  baseline=1865.10ms  get_noise=16.20ms
+  |q|=7 k=1  search_dp=14.93ms  baseline=15.37ms  get_noise=0.82ms
+  |q|=7 k=2  search_dp=107.85ms  baseline=3260.03ms  get_noise=17.79ms
+
+=== dictionary 333333 ===
+  prefix index: SKIPPED (> 100000 words)
+  |q|=2 k=1  search_dp=204.33ms  baseline=nanms  get_noise=62.36ms
+  |q|=3 k=1  search_dp=23.66ms  baseline=nanms  get_noise=4.31ms
+  |q|=3 k=2  search_dp=274.53ms  baseline=nanms  get_noise=95.73ms
+  |q|=4 k=1  search_dp=17.52ms  baseline=nanms  get_noise=2.42ms
+  |q|=4 k=2  search_dp=175.53ms  baseline=nanms  get_noise=55.84ms
+  |q|=5 k=1  search_dp=16.80ms  baseline=nanms  get_noise=1.28ms
+  |q|=5 k=2  search_dp=160.85ms  baseline=nanms  get_noise=29.64ms
+  |q|=6 k=1  search_dp=16.73ms  baseline=nanms  get_noise=1.19ms
+  |q|=6 k=2  search_dp=187.34ms  baseline=nanms  get_noise=29.77ms
+  |q|=7 k=1  search_dp=17.91ms  baseline=nanms  get_noise=1.01ms
+  |q|=7 k=2  search_dp=191.70ms  baseline=nanms  get_noise=24.25ms
+
+wrote C:\Users\youne\OneDrive\Bureau\projets\adaptive-autocomplete\results\benchmark_raw.csv (1056 rows)
+wrote C:\Users\youne\OneDrive\Bureau\projets\adaptive-autocomplete\results\benchmark_agg.csv (121 rows)
+machine: Windows-11-10.0.26200-SP0 / AMD64 Family 25 Model 80 Stepping 0, AuthenticAMD

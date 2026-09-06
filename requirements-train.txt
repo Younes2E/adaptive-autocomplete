@@ -1,0 +1,4 @@
+# Only needed to regenerate data/matrices/ from the Brown corpus
+# (train/n-grams.py). The benchmark pipeline does not import nltk.
+-r requirements.txt
+nltk>=3.8
