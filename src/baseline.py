@@ -1,9 +1,9 @@
-"""T2 -- generate-and-lookup baseline (Kernighan, Church & Gale 1990, section 2).
+"""Baseline naive : generer toutes les variantes, puis chercher (Norvig / Kernighan).
 
-For plain correction this is competitive: enumerate every variant within k edits
-and test each against a set. For the autocompletion task it must additionally
-expand every variant by all of its dictionary completions, and that product is
-what collapses -- the measurement this project is built around.
+C'est l'approche classique a laquelle get_noise() est comparee. Pour la
+correction seule elle est competitive. Pour l'autocompletion elle doit en plus
+etendre chaque variante par toutes ses completions du dictionnaire : c'est ce
+produit variantes x completions qui explose.
 """
 from collections import defaultdict
 
@@ -13,7 +13,7 @@ ALPHABET = "abcdefghijklmnopqrstuvwxyz"
 
 
 def edits1(word):
-    """Every string one edit from `word` (delete, transpose, replace, insert)."""
+    """Toutes les chaines a une edition de `word` (del, transposition, sub, ins)."""
     splits = [(word[:i], word[i:]) for i in range(len(word) + 1)]
     deletes = [L + R[1:] for L, R in splits if R]
     transposes = [L + R[1] + R[0] + R[2:] for L, R in splits if len(R) > 1]
@@ -22,54 +22,47 @@ def edits1(word):
     return set(deletes + transposes + replaces + inserts)
 
 
-def edits_upto(word, k):
-    """Every string within OSA distance k, as the baseline would enumerate it.
+def variants(word, k):
+    """(chaines a distance OSA <= k de `word`, nombre de chaines enumerees).
 
-    Composing edits1 twice also reaches strings at OSA distance 3 -- "rf" -> "fr"
-    -> "for", which OSA scores 3 because it forbids re-editing the transposed
-    substring. Without the final filter the baseline returns a strict superset
-    of search_dp and the correctness gate fails, correctly.
+    Attention : composer edits1 deux fois atteint aussi des chaines a distance
+    OSA 3 (ex. rf -> fr -> for, car OSA interdit de re-editer une sous-chaine
+    transposee). Sans le filtre final la baseline renverrait un sur-ensemble.
     """
     out = {word}
     frontier = {word}
     for _ in range(k):
         frontier = {e for v in frontier for e in edits1(v)}
         out |= frontier
-    return {v for v in out if osa(word, v) <= k}
+    # len(out) = nombre de chaines que la baseline a du enumerer avant tout
+    # lookup : son cout reel, independant du materiel (~54n^2 pour k=2).
+    return {v for v in out if osa(word, v) <= k}, len(out)
 
 
 def build_prefix_index(words):
-    """prefix -> list of word ids. Word ids rather than strings: at 100k words
-    the (prefix, word) product is in the millions of entries."""
-    index = defaultdict(list)
-    for wid, w in enumerate(words):
-        for i in range(len(w) + 1):
-            index[w[:i]].append(wid)
-    return {"index": dict(index), "words": list(words)}
+    """prefixe -> liste des mots qui commencent par ce prefixe.
 
-
-def baseline_search(query, index, max_dist=2, count_only=False):
-    """Variants within k edits, each expanded by all its dictionary completions.
-
-    Returns the set of matching words, or (n_generated, n_unique) when
-    count_only -- n_generated is the pre-deduplication candidate count, the
-    number that carries the paper's argument.
+    C'est l'index que la baseline DOIT construire pour repondre a la tache
+    d'autocompletion. A 333k mots il ne tient plus en memoire.
     """
-    table, words = index["index"], index["words"]
-    variants = edits_upto(query, max_dist)
-    generated = 0
+    index = defaultdict(list)
+    for w in words:
+        for i in range(len(w) + 1):
+            index[w[:i]].append(w)
+    return dict(index)
+
+
+def naive_candidates(word, index, k=1, max_depth=3):
+    """Memes reponses que Trie.get_noise(word, k, max_depth), par generation + lookup.
+
+    Retourne (ensemble de mots, nombre de chaines enumerees avant lookup).
+    Le second est la metrique d'explosion, independante du materiel.
+    """
+    max_len = None if max_depth is None else len(word) + max_depth
+    vs, enumerated = variants(word, k)
     found = set()
-    for v in variants:
-        ids = table.get(v)
-        if not ids:
-            continue
-        generated += len(ids)
-        found.update(ids)
-    if count_only:
-        return generated, len(found)
-    return {words[i] for i in found}
-
-
-def generated_count(query, index, max_dist=2):
-    """Candidates materialised before deduplication -- the explosion metric."""
-    return baseline_search(query, index, max_dist, count_only=True)[0]
+    for v in vs:
+        for w in index.get(v, ()):
+            if max_len is None or len(w) <= max_len:
+                found.add(w)
+    return found, enumerated
