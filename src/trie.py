@@ -9,7 +9,7 @@ class TrieNode:
 
     def is_empty(self):
         return not self.is_word and len(self.children) == 0
-    
+
 
 class Trie:
     def __init__(self):
@@ -30,20 +30,20 @@ class Trie:
     def remove(self, word):
         def loop(node, depth):
             if depth == len(word):
-                if not node.is_word :
+                if not node.is_word:
                     raise KeyError(f'{word} not found')
-                else :
+                else:
                     node.is_word = False
                     self.nb_typed -= node.freq
                     node.freq = 0
                     node.last_used = 0
-            elif word[depth] not in node.children : 
-                raise KeyError(f'{word} not found') 
-            else :
+            elif word[depth] not in node.children:
+                raise KeyError(f'{word} not found')
+            else:
                 char = word[depth]
                 child = node.children[char]
-                loop(child, depth+1)
-                if child.is_empty() :
+                loop(child, depth + 1)
+                if child.is_empty():
                     del node.children[char]
         loop(self.root, 0)
 
@@ -53,17 +53,17 @@ class Trie:
                 node.freq += 1
                 self.nb_typed += 1
                 node.last_used = self.nb_typed
-            elif word[depth] not in node.children : 
+            elif word[depth] not in node.children:
                 raise KeyError(f'{word} not found')
             else:
                 char = word[depth]
-                loop(node.children[char], depth+1)   
+                loop(node.children[char], depth + 1)
         loop(self.root, 0)
 
     def get_noise(self, word, distance=1, max_depth=3):
         """Candidats d'autocompletion tolerante aux fautes, en UN parcours du Trie.
 
-        Retourne les mots w tels que :
+        Retourne les mots w tels que:
           - un prefixe p de w verifie OSA(word, p) <= distance
           - len(w) <= len(word) + max_depth   (max_depth=None : sans limite)
 
@@ -71,7 +71,7 @@ class Trie:
         Pour un noeud de chemin p, ligne[i] = OSA(word[:i], p), donc ligne[n]
         est la distance entre la requete complete et p.
 
-        Deux regles :
+        Deux regles:
           EMISSION : ligne[n] <= distance -> p matche, donc TOUS les mots du
             sous-arbre sont des reponses (p est leur prefixe). On les enumere
             sans refaire de DP.
@@ -178,38 +178,6 @@ class Trie:
                     word = parts[0].lower()
                     try:
                         frequency = int(parts[1])
-                        self.add(word, freq = frequency)
+                        self.add(word, freq=frequency)
                     except Exception:
                         continue
-
-def main():
-    trie = Trie()
-    trie.add("irrespect")
-    trie.add("arbre")
-    trie.add("arret")
-    trie.add("barre")
-    trie.add("air")
-    trie.add("arrets")
-    trie.add("apres")
-    trie.add("arrivererasqhsdsjsd")
-    
-    trie.add("actress")
-    trie.add("cress")
-    trie.add("caress")
-    trie.add("access")
-    trie.add("across")
-    trie.add("acres")
-    trie.add("acre")
-
-    trie.add("then")
-    trie.add("than")
-    trie.add("them")
-    trie.add("the")
-
-
-
-    print("Autocomplete de \"then\"\n",trie.get_noise("then"),"\n")
-
-
-if __name__ == "__main__":
-    main()
