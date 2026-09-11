@@ -4,6 +4,8 @@ __pycache__
 
 final.txt
 
+*.md
+
 *.annot
 *.cmo
 *.cma
