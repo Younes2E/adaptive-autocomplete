@@ -1,7 +1,3 @@
-"""Demo interactive : tape un debut de mot (eventuellement faux), voir le top 5.
-
-    python src/demo.py
-"""
 from pathlib import Path
 
 from confusion import Confusion

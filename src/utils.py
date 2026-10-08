@@ -32,5 +32,4 @@ def osa_row(a, b):
 
 
 def osa(a, b):
-    """Distance d'edition OSA entre deux chaines."""
     return osa_row(a, b)[-1]
