@@ -7,9 +7,6 @@ class TrieNode:
         self.freq = 0
         self.last_used = 0
 
-    def is_empty(self):
-        return not self.is_word and len(self.children) == 0
-
 
 class Trie:
     def __init__(self):
@@ -26,26 +23,6 @@ class Trie:
         node.is_word = True
         node.freq = freq
         self.nb_typed += freq
-
-    def remove(self, word):
-        def loop(node, depth):
-            if depth == len(word):
-                if not node.is_word:
-                    raise KeyError(f'{word} not found')
-                else:
-                    node.is_word = False
-                    self.nb_typed -= node.freq
-                    node.freq = 0
-                    node.last_used = 0
-            elif word[depth] not in node.children:
-                raise KeyError(f'{word} not found')
-            else:
-                char = word[depth]
-                child = node.children[char]
-                loop(child, depth + 1)
-                if child.is_empty():
-                    del node.children[char]
-        loop(self.root, 0)
 
     def type(self, word):
         def loop(node, depth):

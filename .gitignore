@@ -1,46 +1,13 @@
-.DS_Store
-env
-__pycache__
+__pycache__/
+*.pyc
+env/
+
+results/
 
 final.txt
 
-*.md
-
-*.annot
-*.cmo
-*.cma
-*.cmi
-*.a
-*.o
-*.cmx
-*.cmxs
-*.cmxa
-
-*.cmt
-*.cmti
-
-# ocamlbuild and Dune default working directory
-_build/
-
-# ocamlbuild targets
-*.byte
-*.native
-
-# oasis generated files
-setup.data
-setup.log
-
-# Merlin configuring file for Vim and Emacs
-.merlin
-
-# Dune generated files
-*.install
-
 .vscode/
+.DS_Store
 
-
-
-*.exe
-
-# Local OPAM switch
-_opam/
+scripts/
+figures/*.pdf

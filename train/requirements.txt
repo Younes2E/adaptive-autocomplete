@@ -1,0 +1,4 @@
+# Only needed to regenerate data/matrices/count_*.csv from the Brown corpus
+# (train/char_counts.py). The rest of the project does not import nltk.
+-r ../requirements.txt
+nltk>=3.8

@@ -1,5 +1,9 @@
+from pathlib import Path
+
 import pandas as pd
 from nltk.corpus import brown
+
+MATRIX_DIR = Path(__file__).resolve().parent.parent / "data" / "matrices"
 
 def create_counts():
     alphabet = [chr(97+i) for i in range(26)]
@@ -26,8 +30,8 @@ def create_counts():
 
 def main():
     df_unigram, df_bigram = create_counts()
-    df_unigram.to_csv("data/matrices/count_unigram.csv", index_label="char", header=["count"])
-    df_bigram.to_csv("data/matrices/count_bigram.csv")
+    df_unigram.to_csv(MATRIX_DIR / "count_unigram.csv", index_label="char", header=["count"])
+    df_bigram.to_csv(MATRIX_DIR / "count_bigram.csv")
 
 if __name__ == "__main__":
     main()

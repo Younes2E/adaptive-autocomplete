@@ -10,7 +10,8 @@ def editprob(candidate, confusion):
     _, op, x, w = candidate[:4]
     match op:
         case "sub":
-            return (confusion.substitute(w, x) + delta)/(confusion.count_unigram(x)+delta*26)
+            # Kernighan et al. : sub[t, c] / chars[c], t lettre tapee (x), c lettre correcte (w)
+            return (confusion.substitute(x, w) + delta)/(confusion.count_unigram(w)+delta*26)
         case "ins":
             return (confusion.insert(x, w) + delta)/(confusion.count_unigram(x)+delta*26)
         case "del":

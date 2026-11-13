@@ -1,4 +1,4 @@
-"""get_noise (DP sur Trie) contre baseline naive, en trois sections :
+"""get_noise (DP sur Trie) contre baseline naive et SymSpell, en quatre sections :
 
   1. CORRECTION      le lemme, puis get_noise == force brute == baseline
   2. RAPPEL/PRECISION sur les fautes reelles (testset1 / testset2 / spell-errors)
@@ -10,14 +10,14 @@ Metriques de la section 3 :
   generes    chaines enumerees par la baseline avant tout lookup -- idem
   ms         latence mediane sur `repeats` executions apres un warmup
 
-Les tables sont aussi ecrites en CSV (results/quality.csv,
+Les tables sont aussi ecrites en CSV (results/quality_<jeu>.csv,
 results/benchmark.csv) pour etre reprises telles quelles dans le papier.
 
 Usage :
-  python bench.py                             # tout, grille complete
-  python bench.py --sizes 10000 --pairs 20    # rapide
-  python bench.py --max-depth -1              # completions sans limite
-  python bench.py > results/bench.txt         # garder la sortie
+  python benchmarks/bench.py                             # tout, grille complete
+  python benchmarks/bench.py --sizes 10000 --pairs 20    # rapide
+  python benchmarks/bench.py --max-depth -1              # completions sans limite
+  python benchmarks/bench.py > results/bench.txt         # garder la sortie
 """
 import argparse
 import csv
@@ -31,15 +31,15 @@ import sys
 import time
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parent
+ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "src"))
 from trie import Trie                                       # noqa: E402
 from utils import osa_row                                   # noqa: E402
 from baseline import build_prefix_index, naive_candidates   # noqa: E402
 from symspell import build_delete_index, symspell_candidates  # noqa: E402
 
-DICT = ROOT / "data" / "dict" / "en_freq.txt"               # voir data/SOURCES.md
-TESTSETS = {                                                # voir data/SOURCES.md
+DICT = ROOT / "data" / "dict" / "en_freq.txt"               # voir README.md, section Donnees
+TESTSETS = {                                                # voir README.md, section Donnees
     "testset1": ROOT / "data" / "test" / "spell-testset1.txt",   # dev set (Norvig)
     "testset2": ROOT / "data" / "test" / "spell-testset2.txt",   # test set final
     "errors": ROOT / "data" / "test" / "spell-errors.txt",       # Wikipedia + Birkbeck
@@ -62,8 +62,8 @@ def write_csv(path, header, rows):
     print(f"  -> {path.relative_to(ROOT)}")
 
 
-def load(size):
-    """(Trie, liste de mots) pour les `size` mots les plus frequents.
+def load_words(size):
+    """[(mot, frequence)] pour les `size` mots les plus frequents.
     en_freq.txt est trie par frequence decroissante : on prend les premieres lignes."""
     words = []
     with open(DICT, encoding="utf-8") as f:
@@ -73,6 +73,12 @@ def load(size):
                 words.append((parts[0].lower(), int(parts[1])))
             if len(words) >= size:
                 break
+    return words
+
+
+def load(size):
+    """(Trie, liste de mots) pour les `size` mots les plus frequents."""
+    words = load_words(size)
     trie = Trie()
     for w, freq in words:
         trie.add(w, freq=freq)
@@ -167,19 +173,21 @@ def test_lemma(n_pairs=3000, seed=42):
 
 
 def wilson(successes, n, z=1.96):
-    """Demi-largeur de l'intervalle de Wilson a 95 %, en points de pourcentage.
+    """Bornes (basse, haute) de l'intervalle de Wilson a 95 %.
 
     Le rappel est une proportion mesuree sur un echantillon : sans intervalle,
     comparer 93.2 % (60 paires) a 54.4 % (300 paires) ne veut rien dire. Wilson
     plutot que l'approximation normale parce qu'il reste correct pres de 0 et
-    de 1, ou plusieurs de nos cellules se trouvent.
+    de 1, ou plusieurs de nos cellules se trouvent. L'intervalle n'est pas
+    centre sur p : on donne les deux bornes, pas p +/- une demi-largeur.
     """
     if n == 0:
-        return 0.0
+        return 0.0, 1.0
     p = successes / n
     denom = 1 + z * z / n
+    center = (p + z * z / (2 * n)) / denom
     half = z / denom * math.sqrt(p * (1 - p) / n + z * z / (4 * n * n))
-    return half
+    return center - half, center + half
 
 
 def reference(query, words, k, max_depth):
@@ -284,7 +292,7 @@ def quality(size, n_pairs, max_depth, csv_path=None, testset="testset1"):
     rng = random.Random(42)
     pairs = usable if len(usable) <= n_pairs else rng.sample(usable, n_pairs)
     print(f"  {len(usable)} paires exploitables, {len(pairs)} tirees")
-    hdr = (f"{'|q|':>4} {'k':>2} {'n':>4} | {'rappel':>7} {'IC 95%':>9} {'precis.':>8} "
+    hdr = (f"{'|q|':>4} {'k':>2} {'n':>4} | {'rappel':>7} {'IC 95%':>15} {'precis.':>8} "
            f"{'cands':>6} | {'naive rappel':>12} {'naive prec.':>11}")
     print(hdr)
     print("-" * len(hdr))
@@ -304,18 +312,18 @@ def quality(size, n_pairs, max_depth, csv_path=None, testset="testset1"):
                 nprec.append(1 / len(base) if right in base else 0.0)
                 ncand.append(len(got))
             if rec:
-                ci = wilson(sum(rec), len(rec))
+                lo, hi = wilson(sum(rec), len(rec))
                 rows.append([L, k, len(rec), round(statistics.mean(rec), 4),
-                             round(ci, 4),
+                             round(lo, 4), round(hi, 4),
                              round(statistics.mean(prec), 4), statistics.median(ncand),
                              round(statistics.mean(nrec), 4), round(statistics.mean(nprec), 4)])
                 print(f"{str(L):>4} {k:>2} {len(rec):>4} | {statistics.mean(rec):>6.1%} "
-                      f"{'+/-' + format(ci, '.1%'):>9} "
+                      f"{'[' + format(lo, '.1%') + ', ' + format(hi, '.1%') + ']':>15} "
                       f"{statistics.mean(prec):>7.1%} {statistics.median(ncand):>6.0f} | "
                       f"{statistics.mean(nrec):>11.1%} {statistics.mean(nprec):>10.1%}",
                       flush=True)
     if csv_path:
-        write_csv(csv_path, ["prefix_len", "k", "n", "recall", "recall_ci95",
+        write_csv(csv_path, ["prefix_len", "k", "n", "recall", "recall_lo", "recall_hi",
                              "precision", "median_candidates",
                              "naive_recall", "naive_precision"], rows)
     print()
